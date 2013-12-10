@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>three.js webgl - loaders - OBJ MTL loader</title>
+        <title>Chess Graphics</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <style>
             body {
                 font-family: Monospace;
-                background-color: #8ad;
+                background-color: #787878;
                 color: #fff;
                 margin: 0px;
                 overflow: hidden;
@@ -31,9 +31,6 @@
     </head>
 
     <body>
-        <div id="info">
-        <a href="http://threejs.org" target="_blank">three.js</a> - Chess Test
-        </div>
 
         <script type="text/javascript" src="lib/Three.min.js"></script>
 
@@ -47,7 +44,7 @@
 
         <script type="text/javascript" src="lib/helpers.js"></script>
         
-        <script type="text/javascript" src="src/chesspiece.js"></script>
+        <script type="text/javascript" src="src/chesspieces.js"></script>
         <script type="text/javascript" src="src/chessboard.js"></script>
 
 		<script type="text/javascript">
@@ -55,12 +52,19 @@
             var container, stats;
 
             var camera, scene, renderer;
-            var chesspiece;
+            var chesspieces;
 
             var mouseX = 0, mouseY = 0;
 
             var windowHalfX = window.innerWidth / 2;
             var windowHalfY = window.innerHeight / 2;
+            
+            var TOP_DOWN_Y = 500; // Y position for the top down view
+            var TOP_DOWN_Z = 0;   // Z position for the top down view
+            
+            var PERSPECTIVE_Y = 275; // Y position for team perspective views
+            var WHITE_Z = -400;      // Z position for the white perspective view
+            var BLACK_Z = 400;       // Z position for the black perspective view
 
 
             init();
@@ -72,7 +76,9 @@
                 document.body.appendChild( container );
 
                 camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-                camera.position.z = 100;
+                //camera.position.z = 100;
+                camera.position.z = WHITE_Z;
+                camera.position.y = PERSPECTIVE_Y;
 
                 // scene
 
@@ -93,30 +99,19 @@
                 directionalLight.position.set( 400, 200, 1000 ).normalize();
                 scene.add( directionalLight );
 
-                // This should not be necessary, but texture repeat was not working
                 scene.add( new ChessBoard(0, 0) );
-                /*
-                scene.add( new Road(0, 1000) );
-                scene.add( new Road(0, -1000) );
-                scene.add( new Road(1000, 0) );
-                scene.add( new Road(1000, -1000) );
-                scene.add( new Road(1000, 1000) );
-                scene.add( new Road(-1000, 0) );
-                scene.add( new Road(-1000, -1000) );
-                scene.add( new Road(-1000, 1000) );
-                */
 
                 var loader = new THREE.OBJMTLLoader();
 
-                // model
-                chesspiece = new ChessPiece(loader);
-                scene.add( chesspiece );
+                // Chess Pieces
+                chesspieces = new ChessPieces(loader);
+                scene.add( chesspieces );
 
                 renderer = new THREE.WebGLRenderer();
                 renderer.setSize( window.innerWidth, window.innerHeight );
                 container.appendChild( renderer.domElement );
 
-                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+                //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
                 //document.addEventListener( 'keyup', onKeyUp, false );
                 //document.addEventListener( 'keydown', onKeyDown, false );
@@ -165,18 +160,18 @@
 
             function animate() {
                 requestAnimationFrame( animate );
-                //try {
-                //    bicycle.animate();
-                //} catch (e) {}
+                try {
+                    chesspieces.animate();
+                } catch (e) {}
                 render();
 
             }
 
             function render() {
 
-                camera.position.x += ( mouseX - camera.position.x ) * 0.05;
-                camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
-                camera.position.y = Math.max( 0, camera.position.y );
+                //camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+                //camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
+                //camera.position.y = Math.max( 0, camera.position.y );
                 camera.lookAt( scene.position );
 
                 renderer.render( scene, camera );
