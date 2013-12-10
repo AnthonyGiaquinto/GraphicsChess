@@ -1,7 +1,11 @@
 /*
 /
 /  chesspieces.js
-/  handles the rendering of chess pieces on the board
+/
+/  main source for the project
+/
+/  renders chess pieces on the board
+/  contains the dat.GUI user controls and functions implemented with these controls
 /
 */
 
@@ -11,11 +15,11 @@ var ChessPieces = function( loader ) {
 
     var self = this;
 
-    
     this.position.x = 0;
     this.position.y = -20;
     this.scale.x = this.scale.y = this.scale.z = PIECESCALE;
     
+    this.gameID = 'Enter Game ID';
     this.incr = 0.25;   // Distance a piece will move in each frame for an animation
     this.vertical = 11.0 / 3; // Number to keep track of how far a piece must move to get to the next square
     this.count = 0;
@@ -223,7 +227,7 @@ var ChessPieces = function( loader ) {
     // Black Rooks
     loader.load( 'assets/models/brook.obj', 'assets/materials/brook.mtl', function ( brook1 ) {
     	self.brook1 = brook1;
-        self.brook1.position.x = -11.5;
+        self.brook1.position.x = -15.5;
         self.brook1.position.y = -0.75;
         self.brook1.position.z = 15.25;
         self.add( self.brook1 );
@@ -315,29 +319,6 @@ ChessPieces.prototype.animate = function(){
 ChessPieces.prototype.bpawnMove = function(bpawn){
 	bpawn.position.z -= this.incr;
 }
-/*
-Bicycle.prototype.pedalFwd = function(){
-    this.rearWheel.incr += ONEDEGREE;
-}
-
-Bicycle.prototype.pedalRev = function(){
-    this.rearWheel.incr -= ONEDEGREE;
-}
-
-Bicycle.prototype.turnRight = function(){
-    if (this.handlebar.rotation.y < MAXTURN) {
-        this.handlebar.rotation.y += ONEDEGREE;
-        //this.rotateX(-ONEDEGREE);
-    }
-}
-
-Bicycle.prototype.turnLeft = function(){
-    if (this.handlebar.rotation.y > MINTURN) {
-        this.handlebar.rotation.y -= ONEDEGREE;
-        //this.rotateX(ONEDEGREE);
-    }
-}
-*/
 
 //
 // GUI FUNCTIONS
@@ -346,11 +327,32 @@ Bicycle.prototype.turnLeft = function(){
 // Build the gui with a view folder containing buttons to change perspective
 ChessPieces.prototype.buildGUI = function(){
     var gui = new dat.GUI();
+    var gameFolder = gui.addFolder('Game');
+    gameFolder.add(this, 'gameID');
+    gameFolder.add(this, 'openConnection');
+    gameFolder.add(this, 'closeConnection');
+    gameFolder.add(this, 'quit');
     var viewFolder = gui.addFolder('View');
     viewFolder.add(this, 'topView');
     viewFolder.add(this, 'whiteTeamView');
     viewFolder.add(this, 'blackTeamView');
-    viewFolder.open();
+    gameFolder.open();
+}
+
+// opens connection to the server
+ChessPieces.prototype.openConnection = function(){
+}
+
+// closes the connection to the server
+ChessPieces.prototype.closeConnection = function(){
+}
+
+// quits the application
+// seems that browsers don't normally let scripts close windows
+// solution found at: http://productforums.google.com/forum/#!topic/chrome/GjsCrvPYGlA
+ChessPieces.prototype.quit = function(){
+	window.open('','_self',''); 
+    window.close(); 
 }
 
 // changes perspective to top view
@@ -369,5 +371,4 @@ ChessPieces.prototype.whiteTeamView = function(){
 ChessPieces.prototype.blackTeamView = function(){
 	camera.position.y = PERSPECTIVE_Y;
 	camera.position.z = BLACK_Z;
-}
-    
+}  

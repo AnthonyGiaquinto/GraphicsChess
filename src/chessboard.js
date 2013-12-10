@@ -1,4 +1,13 @@
+/*
+/
+/ chessboard.js
+/ contains the chessboard object created similarly to the road
+/ in the bicycle program
+/
+*/
+
 var BOARDWIDTH = 400;
+
 var ChessBoard = function( x, z ){
     THREE.Mesh.call( this, this.geometry, this.material );
     this.position.x = x;
