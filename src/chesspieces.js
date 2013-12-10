@@ -18,6 +18,7 @@ var ChessPieces = function( loader ) {
     this.position.x = 0;
     this.position.y = -20;
     this.scale.x = this.scale.y = this.scale.z = PIECESCALE;
+    this.gameID = 'Enter Game ID';      // will be changed based on user input
     
     this.incr = 0.25;   // Distance a piece will move in each frame for an animation
     this.vertical = 11.0 / 3; // Number to keep track of how far a piece must move to get to the next square
