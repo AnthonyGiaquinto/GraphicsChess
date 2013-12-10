@@ -46,10 +46,9 @@
         <script type="text/javascript" src="lib/dat.gui.min.js"></script>
 
         <script type="text/javascript" src="lib/helpers.js"></script>
-        <script type="text/javascript" src="bicycle/js/bicycle.js"></script>
-        <script type="text/javascript" src="bicycle/js/road.js"></script>
         
         <script type="text/javascript" src="src/chesspiece.js"></script>
+        <script type="text/javascript" src="src/chessboard.js"></script>
 
 		<script type="text/javascript">
 
@@ -95,7 +94,8 @@
                 scene.add( directionalLight );
 
                 // This should not be necessary, but texture repeat was not working
-                scene.add( new Road(0, 0) );
+                scene.add( new ChessBoard(0, 0) );
+                /*
                 scene.add( new Road(0, 1000) );
                 scene.add( new Road(0, -1000) );
                 scene.add( new Road(1000, 0) );
@@ -104,6 +104,7 @@
                 scene.add( new Road(-1000, 0) );
                 scene.add( new Road(-1000, -1000) );
                 scene.add( new Road(-1000, 1000) );
+                */
 
                 var loader = new THREE.OBJMTLLoader();
 
