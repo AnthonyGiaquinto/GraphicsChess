@@ -39,7 +39,7 @@
 
         <script type="text/javascript" src="lib/Detector.js"></script>
         <script type="text/javascript" src="lib/stats.min.js"></script>
-        
+
 		<script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
         <script type="text/javascript" src="lib/dat.gui.min.js"></script>
 
@@ -57,14 +57,20 @@
             
             var url = '10.11.18.65/cg/chess/'; // url for server query
             
+            var ready = true;   // Are we ready to animate the next move?
+            
+            var distanceInitialized = false; // Are we currently in an animation phase?
+            var currentPointsInitialized = false; // Same as above
+            var gameOn = false; // Is the connection opened?
+            var currentMove = 0;    // The current move of the game (defaulted to 0)
 
             var mouseX = 0, mouseY = 0;
 
             var windowHalfX = window.innerWidth / 2;
             var windowHalfY = window.innerHeight / 2;
             
-            var TOP_DOWN_Y = 500; // Y position for the top down view
-            var TOP_DOWN_Z = 0;   // Z position for the top down view
+            var TOP_Y = 500; // Y position for the top down view
+            var TOP_Z = 0;   // Z position for the top down view
             
             var PERSPECTIVE_Y = 275; // Y position for team perspective views
             var WHITE_Z = -400;      // Z position for the white perspective view
@@ -75,25 +81,14 @@
             animate();
 
             function init() {
-            	var items = [];
-            
-            	$.getJSON( 'http://www.bencarle.com/chess/cg/340', function( data ) {
-  					$.each( data, function( key, val ) {
-    					items.push(val);
-  					});
-  				});
-  				
-  				for (var i = 0; i < items.length; i++) {
-  					console.log(items[i]);
-  				}
 
                 container = document.createElement( 'div' );
                 document.body.appendChild( container );
 
                 camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
                 //camera.position.z = 100;
-                camera.position.z = WHITE_Z;
-                camera.position.y = PERSPECTIVE_Y;
+                camera.position.z = TOP_Z;
+                camera.position.y = TOP_Y;
 
                 // scene
 
@@ -134,7 +129,6 @@
                 //
 
                 window.addEventListener( 'resize', onWindowResize, false );
-
             }
 
             function onWindowResize() {
@@ -149,23 +143,19 @@
 
             }
 
-/*
-            function onKeyUp( event ) {
-                switch (event.keyCode) {
-                case 73: bicycle.pedalFwd(); break;
-                case 75: bicycle.pedalRev(); break;
-                default: return;
-                }
-            }
-
-            function onKeyDown( event ) {
-                switch (event.keyCode) {
-                case 74: bicycle.turnRight(); break;
-                case 76: bicycle.turnLeft(); break;
-                default: return;
-                }
-            }
-*/
+			// function to query the server and place the json data fields in an array
+			function getGameData() {
+				$.get('http://localhost:8080/data.json', function( data ) {
+					chesspieces.gameData[0] = data.lastmovenumber;
+					chesspieces.gameData[1] = data.blacktime;
+					chesspieces.gameData[2] = data.whitetime;
+					chesspieces.gameData[3] = data.whitesturn;
+					chesspieces.gameData[4] = data.moves;
+					chesspieces.gameData[5] = data.gameover;
+				}, 'json');
+				gameOn = true; // ready to start
+			}
+			
             function onDocumentMouseMove( event ) {
 
                 mouseX = ( event.clientX - windowHalfX ) / 2;
@@ -175,11 +165,12 @@
 
             function animate() {
                 requestAnimationFrame( animate );
-                try {
+                if ( gameOn && chesspieces.gameData.length > 1) {
+                	try {
                     chesspieces.animate();
-                } catch (e) {}
+                	} catch (e) {}
+                }
                 render();
-
             }
 
             function render() {
