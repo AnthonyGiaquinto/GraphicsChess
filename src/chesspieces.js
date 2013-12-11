@@ -23,7 +23,6 @@ var ChessPieces = function( loader ) {
     this.incr = 0.25;   // Distance a piece will move in each frame for an animation
     this.vertical = 11.0 / 3; // Number to keep track of how far a piece must move to get to the next square
     this.count = 0;
-
 	
 	// White Pawns
     loader.load( 'assets/models/wpawn.obj', 'assets/materials/wpawn.mtl', function ( wpawn1 ) {

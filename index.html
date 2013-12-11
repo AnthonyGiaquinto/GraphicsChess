@@ -39,7 +39,8 @@
 
         <script type="text/javascript" src="lib/Detector.js"></script>
         <script type="text/javascript" src="lib/stats.min.js"></script>
-
+        
+		<script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
         <script type="text/javascript" src="lib/dat.gui.min.js"></script>
 
         <script type="text/javascript" src="lib/helpers.js"></script>
@@ -74,6 +75,17 @@
             animate();
 
             function init() {
+            	var items = [];
+            
+            	$.getJSON( 'http://www.bencarle.com/chess/cg/340', function( data ) {
+  					$.each( data, function( key, val ) {
+    					items.push(val);
+  					});
+  				});
+  				
+  				for (var i = 0; i < items.length; i++) {
+  					console.log(items[i]);
+  				}
 
                 container = document.createElement( 'div' );
                 document.body.appendChild( container );
